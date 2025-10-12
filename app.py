@@ -1193,8 +1193,8 @@ def _as_vec(x, name):
 
 st.header("Step 4 — Weights & search")
 w_img  = st.slider("Image weight", 0.0, 1.0, 0.50, 0.05)
-w_tags = st.slider("Tags weight",  0.0, 1.0, 0.20, 0.05)
-w_user = st.slider("Taste weight", 0.0, 1.0, 0.30, 0.05)
+w_tags = st.slider("Tags weight",  0.0, 1.0, 0.25, 0.05)
+w_user = st.slider("Taste weight", 0.0, 1.0, 0.25, 0.05)
 num_show = st.radio("How many to show", [2, 4, 6], index=1, horizontal=True, key="num_show_radio")
 
 if st.button("Suggest songs"):
@@ -1287,5 +1287,6 @@ with st.expander("Advanced"):
     st.caption("Unified CLIP space (ViT-B/32), TIGER-lite routing, and quick taste learning (no training).")
     st.caption(f"CI loaded: {HAS_CI}, Interrogator ready: {interrogator is not None}")
     st.caption("Tip: first run may be slow due to model downloads & cache warm-up. Subsequent runs are fast.")
+
 
 
