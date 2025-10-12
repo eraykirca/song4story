@@ -16,7 +16,7 @@ dependencies:
       - torchvision==0.19.1
       - open-clip-torch==2.24.0
       - rapidfuzz==3.9.6
-
+      - numpy<2
 
 
 
