@@ -20,12 +20,12 @@ ASSETS = [
     {
         "name": "cache_vitb_bundle.tar.gz",
         "url": "https://github.com/eraykirca/song4story/releases/download/v1-assets/cache_vitb_bundle.tar.gz",
-        "sha256": "<paste sha256 of cache_vitb_bundle.tar.gz here>"
+        "sha256": "7b56ee9abb1bcd9fcc7b8c9bd26dac7a91a29a0a6eb2a875f0459684c9eb23c9"
     },
     {
         "name": "models_bundle.tar.gz",
         "url": "https://github.com/eraykirca/song4story/releases/download/v1-assets/models_bundle.tar.gz",
-        "sha256": "<paste sha256 of models_bundle.tar.gz here>"
+        "sha256": "8ea38c52fa9be9c6c6fc6f70f6d7255d7e652db26a9b4f01e0c10b6ce53f55b0"
     }
 ]
 
@@ -1287,4 +1287,5 @@ with st.expander("Advanced"):
     st.caption("Unified CLIP space (ViT-B/32), TIGER-lite routing, and quick taste learning (no training).")
     st.caption(f"CI loaded: {HAS_CI}, Interrogator ready: {interrogator is not None}")
     st.caption("Tip: first run may be slow due to model downloads & cache warm-up. Subsequent runs are fast.")
+
 
