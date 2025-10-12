@@ -10,6 +10,56 @@ import torch
 import open_clip
 import streamlit.components.v1 as components
 import secrets
+import os, hashlib, tarfile, pathlib, tempfile, urllib.request
+
+ROOT = pathlib.Path(__file__).parent.resolve()
+CACHE_DIR  = ROOT / "cache"
+MODELS_DIR = ROOT / "models"
+
+ASSETS = [
+    {
+        "name": "cache_vitb_bundle.tar.gz",
+        "url": "https://github.com/eraykirca/song4story/releases/download/v1-assets/cache_vitb_bundle.tar.gz",
+        "sha256": "<paste sha256 of cache_vitb_bundle.tar.gz here>"
+    },
+    {
+        "name": "models_bundle.tar.gz",
+        "url": "https://github.com/eraykirca/song4story/releases/download/v1-assets/models_bundle.tar.gz",
+        "sha256": "<paste sha256 of models_bundle.tar.gz here>"
+    }
+]
+
+def _sha256(path: pathlib.Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+def _download(url: str, dst: pathlib.Path):
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    with urllib.request.urlopen(url) as r, dst.open("wb") as f:
+        while True:
+            chunk = r.read(1024 * 1024)
+            if not chunk: break
+            f.write(chunk)
+
+def ensure_assets():
+    if CACHE_DIR.exists() and any(CACHE_DIR.iterdir()) and MODELS_DIR.exists() and any(MODELS_DIR.iterdir()):
+        return
+    for spec in ASSETS:
+        with tempfile.TemporaryDirectory() as td:
+            tmp = pathlib.Path(td) / spec["name"]
+            _download(spec["url"], tmp)
+            if spec.get("sha256"):
+                digest = _sha256(tmp)
+                if digest != spec["sha256"]:
+                    raise RuntimeError(f"Checksum failed for {spec['name']}: expected {spec['sha256']} got {digest}")
+            with tarfile.open(tmp, "r:gz") as tar:
+                tar.extractall(path=ROOT)
+
+ensure_assets()
+
 
 
 import urllib.parse
@@ -1237,3 +1287,4 @@ with st.expander("Advanced"):
     st.caption("Unified CLIP space (ViT-B/32), TIGER-lite routing, and quick taste learning (no training).")
     st.caption(f"CI loaded: {HAS_CI}, Interrogator ready: {interrogator is not None}")
     st.caption("Tip: first run may be slow due to model downloads & cache warm-up. Subsequent runs are fast.")
+
