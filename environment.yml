@@ -11,3 +11,9 @@ dependencies:
   - torchvision=0.19.1
   - pytorch=2.4.1
   - cpuonly
+  - pip:
+      - wordfreq==3.1.1
+    
+
+
+
