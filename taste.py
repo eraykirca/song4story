@@ -76,7 +76,7 @@ def _widen_neighbors(seed_rows, base_k, used, min_unique, hard_cap=128):
 
 def _dislike_vector(use_last_round=True):
     rows = []
-    from app_hooks import taste  # late import to access session state holder
+    from app_hooks import get_taste  # late import to access session state holder
     if use_last_round and "last_round_rows" in st.session_state:
         rows = [r for r in st.session_state["last_round_rows"] if r in taste.dislikes]
     if not rows:
@@ -98,7 +98,7 @@ def _clusters_sorted_by_similarity_to_vec(vec):
     return [(int(b1), float(sims[ int(b1) ])) for b1 in order]
 
 def _user_vector_or_centroid():
-    from app_hooks import taste
+    from app_hooks import get_taste
     uv = taste.user_vector()
     if uv is not None:
         return uv
@@ -181,7 +181,7 @@ def _pick_cluster_rep(b1, blocked_rows, top_m=3):
     return int(ds.rng.choice(picks))
 
 def policy_sample_candidates(k=5):
-    from app_hooks import taste
+    from app_hooks import get_taste
     blocked = set(taste.seen) | set(taste.likes) | set(taste.dislikes)
     if len(embeddings) - len(blocked) < k:
         taste.seen = set(taste.likes) | set(taste.dislikes)
@@ -381,7 +381,7 @@ def policy_sample_candidates(k=5):
     return np.array(cands[:k], dtype=int)
 
 def sample_unseen_candidates(k: int = 5) -> np.ndarray:
-    from app_hooks import taste
+    from app_hooks import get_taste
     blocked = set(taste.seen) | set(taste.likes) | set(taste.dislikes)
     all_rows = np.arange(len(embeddings))
     if blocked:
@@ -398,6 +398,7 @@ def sample_unseen_candidates(k: int = 5) -> np.ndarray:
 
     k_eff = min(k, len(available))
     return np.random.choice(available, size=k_eff, replace=False)
+
 
 
 
