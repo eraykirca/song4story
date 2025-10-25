@@ -26,6 +26,7 @@ def rerun():
         st.experimental_rerun()
 
 st.set_page_config(page_title="Song4Story", page_icon="🎵")
+taste = get_taste()
 
 st.title("Song4Story — pick the best song for your IG story!")
 st.header(f"Your music taste + Your image = Your song!")
