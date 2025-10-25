@@ -180,7 +180,7 @@ def _pick_cluster_rep(b1, blocked_rows, top_m=3):
     return int(rng.choice(picks))
 
 def policy_sample_candidates(k=5):
-    from .app_hooks import taste
+    from app_hooks import taste
     blocked = set(taste.seen) | set(taste.likes) | set(taste.dislikes)
     if len(embeddings) - len(blocked) < k:
         taste.seen = set(taste.likes) | set(taste.dislikes)
@@ -397,3 +397,4 @@ def sample_unseen_candidates(k: int = 5) -> np.ndarray:
 
     k_eff = min(k, len(available))
     return np.random.choice(available, size=k_eff, replace=False)
+
