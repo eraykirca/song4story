@@ -1,7 +1,5 @@
 import io, pathlib, secrets, numpy as np
 from PIL import Image
-
-
 import streamlit as st
 
 # Global memory for the taste warm-up across rounds (this session)
@@ -87,12 +85,26 @@ if not taste.done():
             rerun()
 
         if st.button("Start Over", key="start_over_btn"):
-            for k in ("taste", "taste_seen_rows", "taste_seen_artists", "rng_seed"):
-                if k in st.session_state:
-                    del st.session_state[k]
-            if "taste" in st.session_state and hasattr(st.session_state.taste, "current_cands"):
-                st.session_state.taste.current_cands = None
-            rerun()
+                for k in (
+                    "taste",                   # TasteState object
+                    "taste_seen_rows",         # per-round dedupe cache
+                    "taste_seen_artists",
+                    "pressed_none_last_round", # 'none of these' flag
+                    "last_round_rows",         # last 5 shown
+                    "rng_seed",                # we'll recreate below
+                ):
+                    st.session_state.pop(k, None)
+
+                # New seed + resync the module RNG that taste.py reads
+                st.session_state["rng_seed"] = secrets.randbits(32)
+                import data_state as ds
+                ds.rng = np.random.default_rng(st.session_state["rng_seed"])
+
+                # also clear any persisted in-progress candidates, if present
+                if "taste" in st.session_state and hasattr(st.session_state.taste, "current_cands"):
+                    st.session_state.taste.current_cands = None
+            
+                rerun()
 
         with st.expander("How does this taste picker work?"):
             st.markdown(
