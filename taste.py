@@ -75,7 +75,7 @@ def _widen_neighbors(seed_rows, base_k, used, min_unique, hard_cap=128):
 
 def _dislike_vector(use_last_round=True):
     rows = []
-    from .app_hooks import taste  # late import to access session state holder
+    from app_hooks import taste  # late import to access session state holder
     if use_last_round and "last_round_rows" in st.session_state:
         rows = [r for r in st.session_state["last_round_rows"] if r in taste.dislikes]
     if not rows:
@@ -97,7 +97,7 @@ def _clusters_sorted_by_similarity_to_vec(vec):
     return [(int(b1), float(sims[ int(b1) ])) for b1 in order]
 
 def _user_vector_or_centroid():
-    from .app_hooks import taste
+    from app_hooks import taste
     uv = taste.user_vector()
     if uv is not None:
         return uv
@@ -397,4 +397,5 @@ def sample_unseen_candidates(k: int = 5) -> np.ndarray:
 
     k_eff = min(k, len(available))
     return np.random.choice(available, size=k_eff, replace=False)
+
 
