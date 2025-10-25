@@ -3,8 +3,9 @@ import numpy as np
 import streamlit as st
 from data_state import (
     embeddings, song_meta, KM1, cluster_members, row2b1, archetype_row,
-    CENTERS_NORM, K_EACH_EARLY, K_EACH_LATE, rng, faiss_index
+    CENTERS_NORM, K_EACH_EARLY, K_EACH_LATE, faiss_index
 )
+import data_state as ds
 import faiss
 
 class TasteState:
@@ -177,7 +178,7 @@ def _pick_cluster_rep(b1, blocked_rows, top_m=3):
             break
     if not picks:
         return None
-    return int(rng.choice(picks))
+    return int(ds.rng.choice(picks))
 
 def policy_sample_candidates(k=5):
     from app_hooks import taste
@@ -217,7 +218,7 @@ def policy_sample_candidates(k=5):
 
             dv = _dislike_vector(use_last_round=True)
             far = [b for (b, _) in reversed(_clusters_sorted_by_similarity_to_vec(dv))] if dv is not None else list(cluster_members.keys())
-            far = list(rng.permutation(far)) if len(far) > 1 else far
+            far = list(ds.rng.permutation(far)) if len(far) > 1 else far
 
             for b1 in far:
                 if len(cands) >= k:
@@ -231,7 +232,7 @@ def policy_sample_candidates(k=5):
 
             if len(cands) < k and cluster_members:
                 rest = [b for b in cluster_members.keys() if b not in avoid_clusters]
-                rest = list(rng.permutation(rest))
+                rest = list(ds.rng.permutation(rest))
                 for b1 in rest:
                     if len(cands) >= k:
                         break
@@ -247,7 +248,7 @@ def policy_sample_candidates(k=5):
         like_seed = taste.likes[-5:] if taste.likes else []
         neigh = _faiss_neighbors(like_seed, k_each=K_EACH_EARLY, exclude=used_rows) if like_seed else []
         if neigh:
-            neigh = list(rng.permutation(neigh))
+            neigh = list(ds.rng.permutation(neigh))
 
         cands = []
         for r in neigh:
@@ -270,7 +271,7 @@ def policy_sample_candidates(k=5):
         if len(cands) < k:
             all_rows = np.setdiff1d(np.arange(len(embeddings)),
                                     np.fromiter(used_rows | set(cands), int, count=len(used_rows | set(cands))) if used_rows else [])
-            all_rows = list(rng.permutation(all_rows))
+            all_rows = list(ds.rng.permutation(all_rows))
             for r in all_rows:
                 if len(cands) >= k:
                     break
@@ -285,7 +286,7 @@ def policy_sample_candidates(k=5):
     if taste.round <= 1 and CENTERS_NORM is not None and cluster_members:
         cands = []
         cluster_ids = list(cluster_members.keys())
-        cluster_ids = list(rng.permutation(cluster_ids))
+        cluster_ids = list(ds.rng.permutation(cluster_ids))
         for b1 in cluster_ids:
             if len(cands) >= k:
                 break
@@ -319,7 +320,7 @@ def policy_sample_candidates(k=5):
         like_seed = taste.likes[-3:] if taste.likes else []
         neigh = _faiss_neighbors(like_seed, k_each=K_EACH_EARLY, exclude=used_rows) if like_seed else []
         if neigh:
-            neigh = list(rng.permutation(neigh))
+            neigh = list(ds.rng.permutation(neigh))
 
         cands = []
         for r in neigh:
@@ -330,7 +331,7 @@ def policy_sample_candidates(k=5):
             cands.append(int(r))
 
         cluster_ids = list(cluster_members.keys())
-        cluster_ids = list(rng.permutation(cluster_ids))
+        cluster_ids = list(ds.rng.permutation(cluster_ids))
         for b1 in cluster_ids:
             if len(cands) >= k:
                 break
@@ -345,7 +346,7 @@ def policy_sample_candidates(k=5):
     like_seed = taste.likes[-5:] if taste.likes else []
     neigh = _faiss_neighbors(like_seed, k_each=K_EACH_LATE, exclude=used_rows) if like_seed else []
     if neigh:
-        neigh = list(rng.permutation(neigh))
+        neigh = list(ds.rng.permutation(neigh))
 
     cands = []
     for r in neigh:
@@ -368,7 +369,7 @@ def policy_sample_candidates(k=5):
     if len(cands) < k:
         all_rows = np.setdiff1d(np.arange(len(embeddings)),
                                 np.fromiter(used_rows | set(cands), int, count=len(used_rows | set(cands))) if used_rows else [])
-        all_rows = list(rng.permutation(all_rows))
+        all_rows = list(ds.rng.permutation(all_rows))
         for r in all_rows:
             if len(cands) >= k:
                 break
@@ -397,6 +398,7 @@ def sample_unseen_candidates(k: int = 5) -> np.ndarray:
 
     k_eff = min(k, len(available))
     return np.random.choice(available, size=k_eff, replace=False)
+
 
 
 
