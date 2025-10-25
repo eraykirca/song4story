@@ -10,7 +10,7 @@ def route_bucket(x: np.ndarray) -> Optional[Tuple[int,int]]:
     if False:  # kept placeholder to preserve function body when moved (no behavior change)
         pass
     # needs KM/bucket map. they’re accessed in app through data_state
-    from .data_state import bucket_map, song_meta as _meta
+    from data_state import bucket_map, song_meta as _meta
     if bucket_map is None:
         return None
     D, I = faiss_index.search(x[None,:].astype("float32"), 1)
@@ -112,3 +112,4 @@ def search(x: np.ndarray, n: int = 5, k: int = TOPK) -> List[Dict]:
 
     score_map = {r: s for r, s in zip(rows_u, scores_u)}
     return pack(final_rows, [score_map.get(r, 0.0) for r in final_rows])
+
