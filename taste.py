@@ -380,7 +380,7 @@ def policy_sample_candidates(k=5):
     return np.array(cands[:k], dtype=int)
 
 def sample_unseen_candidates(k: int = 5) -> np.ndarray:
-    from .app_hooks import taste
+    from app_hooks import taste
     blocked = set(taste.seen) | set(taste.likes) | set(taste.dislikes)
     all_rows = np.arange(len(embeddings))
     if blocked:
@@ -397,5 +397,6 @@ def sample_unseen_candidates(k: int = 5) -> np.ndarray:
 
     k_eff = min(k, len(available))
     return np.random.choice(available, size=k_eff, replace=False)
+
 
 
