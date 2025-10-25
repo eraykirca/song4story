@@ -1,5 +1,6 @@
 import io, pathlib, secrets, numpy as np
 from PIL import Image
+import random
 import streamlit as st
 SEED = 42
 random.seed(SEED)
@@ -254,6 +255,7 @@ with st.expander("Advanced"):
     st.caption("Unified CLIP space (ViT-B/32), TIGER-lite routing, and quick taste learning (no training).")
     st.caption(f"CI loaded: {HAS_CI}, Interrogator ready: {interrogator is not None}")
     st.caption("Tip: first run may be slow due to model downloads & cache warm-up. Subsequent runs are fast.")
+
 
 
 
