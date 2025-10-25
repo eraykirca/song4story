@@ -16,7 +16,7 @@ from data_state import (
 )
 from search_utils import search
 from tags import auto_tags_for_image, HAS_CI, interrogator
-from app_hooks import taste
+from app_hooks import get_taste
 from taste import policy_sample_candidates
 
 def rerun():
@@ -259,6 +259,7 @@ with st.expander("Advanced"):
     st.caption("Unified CLIP space (ViT-B/32), TIGER-lite routing, and quick taste learning (no training).")
     st.caption(f"CI loaded: {HAS_CI}, Interrogator ready: {interrogator is not None}")
     st.caption("Tip: first run may be slow due to model downloads & cache warm-up. Subsequent runs are fast.")
+
 
 
 
