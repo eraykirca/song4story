@@ -1,16 +1,8 @@
 import io, pathlib, secrets, numpy as np
 from PIL import Image
-import random
-import torch
-import streamlit as st
-SEED = 42
-random.seed(SEED)
-np.random.seed(SEED)
-torch.set_grad_enabled(False)
 
-# Per-session RNG (stable randomness per browser session)
-st.session_state.setdefault("rng_seed", secrets.randbits(32))
-rng = np.random.default_rng(st.session_state["rng_seed"])
+
+import streamlit as st
 
 # Global memory for the taste warm-up across rounds (this session)
 st.session_state.setdefault("taste_seen_rows", set())
@@ -256,6 +248,7 @@ with st.expander("Advanced"):
     st.caption("Unified CLIP space (ViT-B/32), TIGER-lite routing, and quick taste learning (no training).")
     st.caption(f"CI loaded: {HAS_CI}, Interrogator ready: {interrogator is not None}")
     st.caption("Tip: first run may be slow due to model downloads & cache warm-up. Subsequent runs are fast.")
+
 
 
 
